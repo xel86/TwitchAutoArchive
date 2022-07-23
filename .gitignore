@@ -1,3 +1,5 @@
+bin/
+
 # Prerequisites
 *.d
 
@@ -30,3 +32,6 @@
 *.exe
 *.out
 *.app
+
+compile_commands.json
+.clang-format

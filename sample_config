@@ -1,0 +1,11 @@
+# You must provide either a client_id and secret, or an access_token.
+[TwitchAuth]
+client_id =
+client_secret =
+access_token =
+
+# Replace numbers with a twitch user_id and the directory
+# with where you want the downloaded vods to go for that user
+[Streamers]
+131913322 /home/user/vods/user1
+131913321 /home/user/vods/user2
