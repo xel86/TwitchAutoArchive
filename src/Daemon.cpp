@@ -8,6 +8,8 @@
 #include <signal.h>
 #include <sstream>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 Log LOG;
 

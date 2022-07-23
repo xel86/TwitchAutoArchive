@@ -10,7 +10,7 @@ CC := clang++
 CPPFLAGS := -Iinclude -MMD -MP -std=c++17
 CFLAGS   := -g -Wall
 LDFLAGS  :=
-LDLIBS   := -lcurl
+LDLIBS   := -lcurl -lpthread
 
 .PHONY: test clean
 
