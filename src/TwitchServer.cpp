@@ -90,7 +90,7 @@ std::vector<Streamer*> TwitchServer::setLiveStatus(
     std::vector<Streamer*> changedStatus;
     try {
         std::vector<json> liveIds;
-        json j = json::parse(data);
+        json j = json::parse(data.str());
         for (const auto& obj : j["data"]) {
             try {
                 if (obj["type"] == "live") {

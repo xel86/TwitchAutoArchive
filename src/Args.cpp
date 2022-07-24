@@ -64,7 +64,7 @@ void parseArgs(int argc, char** argv, Args& args) {
     args.debug = false;
     args.rate = 60;
     args.configPath = "";
-    args.logPath = dir / "tad.log";
+    args.logPath = dir / "taa.log";
 
     const std::vector<std::string_view> argList(argv + 1, argv + argc);
     for (auto it = argList.begin(), end = argList.end(); it != end; ++it) {
