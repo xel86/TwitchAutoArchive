@@ -13,9 +13,12 @@ void Archiver::run() {
         auto changedStatus = m_twitch.setLiveStatus(m_streamers, false);
         if (!changedStatus.empty()) {
             for (Streamer* s : changedStatus) {
-                auto t =
-                    std::thread(streamlinkDownloadFunc, s->user_login, s->dir);
-                t.detach();
+                /* Streamer went online */
+                if (s->live) {
+                    auto t = std::thread(streamlinkDownloadFunc, s->user_login,
+                                         s->dir);
+                    t.detach();
+                }
             }
         }
 

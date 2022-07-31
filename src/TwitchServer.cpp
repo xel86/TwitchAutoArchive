@@ -117,7 +117,6 @@ std::vector<Streamer*> TwitchServer::setLiveStatus(
                 /* Streamer went offline */
                 if (streamer.live == true) {
                     streamer.live = false;
-                    streamer.user_login = (*it)["user_login"];
                     changedStatus.push_back(&streamer);
                 }
             }
