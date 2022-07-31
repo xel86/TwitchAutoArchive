@@ -3,9 +3,8 @@
 #include "Log.hpp"
 
 #include <iostream>
+#include <thread>
 #include <unistd.h>
-
-std::vector<DownloadThread> threads;
 
 void Archiver::run() {
     while (!m_shutdown) {
@@ -14,7 +13,9 @@ void Archiver::run() {
         auto changedStatus = m_twitch.setLiveStatus(m_streamers, false);
         if (!changedStatus.empty()) {
             for (Streamer* s : changedStatus) {
-                threads.push_back(DownloadThread(*s));
+                auto t =
+                    std::thread(streamlinkDownloadFunc, s->user_login, s->dir);
+                t.detach();
             }
         }
 
