@@ -24,5 +24,5 @@ class Archiver {
     TwitchServer m_twitch;
     std::unordered_map<user_id, Streamer> m_streamers;
     int m_rate;
-    bool m_shutdown;
+    bool m_shutdown{false};
 };

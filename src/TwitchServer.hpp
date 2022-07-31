@@ -19,7 +19,7 @@ struct Streamer {
     std::string user_id;       /* User id of streamer */
     std::string user_login;    /* User login of streamer */
     std::filesystem::path dir; /* Directory to download streams too */
-    bool live;
+    bool live{false};
 };
 
 class TwitchServer {
