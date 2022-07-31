@@ -5,6 +5,8 @@
 #include <string_view>
 #include <vector>
 
+Args gArgs{};
+
 void printHelp() {
     std::cout << "Usage: TwitchAutoArchive [OPTIONS]...\n";
     std::cout << "Daemon to automatically download twitch streams when they go "

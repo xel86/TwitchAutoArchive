@@ -67,20 +67,19 @@ void daemonize() {
 }
 
 int main(int argc, char** argv) {
-    Args args;
-    parseArgs(argc, argv, args);
+    parseArgs(argc, argv, gArgs);
 
-    Config cfg = parseConfig(args.configPath);
+    Config cfg = parseConfig(gArgs.configPath);
 
-    LOG.init(args.logPath, args.debug);
+    LOG.init(gArgs.logPath, gArgs.debug);
     LOG.write(LogLevel::Always, "Log initalized!");
 
-    if (args.daemon) {
+    if (gArgs.daemon) {
         daemonize();
     }
 
     auto archiver =
-        Archiver(std::move(cfg.auth), std::move(cfg.streamers), args.rate);
+        Archiver(std::move(cfg.auth), std::move(cfg.streamers), gArgs.rate);
 
     archiver.run();
 }

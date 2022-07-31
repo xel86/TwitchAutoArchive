@@ -18,6 +18,8 @@ class Archiver {
 
     void run();
 
+    void refreshStreamersFromConfig();
+
   private:
     TwitchServer m_twitch;
     std::unordered_map<user_id, Streamer> m_streamers;

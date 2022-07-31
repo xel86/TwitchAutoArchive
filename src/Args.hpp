@@ -10,6 +10,8 @@ struct Args {
     std::filesystem::path logPath;    /* File path for log */
 };
 
+extern Args gArgs;
+
 /* Prints help menu */
 void printHelp();
 
