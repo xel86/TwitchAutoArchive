@@ -13,12 +13,14 @@
 
 Log LOG;
 
-void daemonize() {
+void daemonize()
+{
     pid_t pid;
 
     pid = fork();
 
-    if (pid < 0) {
+    if (pid < 0)
+    {
         fprintf(stderr, "Failed to fork into daemon process. Exiting.");
         exit(EXIT_FAILURE);
     }
@@ -27,9 +29,9 @@ void daemonize() {
     if (pid > 0)
         exit(EXIT_SUCCESS);
 
-    if (setsid() < 0) {
-        fprintf(stderr,
-                "Failed to set child process as session leader. Exiting.");
+    if (setsid() < 0)
+    {
+        fprintf(stderr, "Failed to set child process as session leader. Exiting.");
         exit(EXIT_FAILURE);
     }
 
@@ -38,7 +40,8 @@ void daemonize() {
 
     pid = fork();
 
-    if (pid < 0) {
+    if (pid < 0)
+    {
         fprintf(stderr, "Failed to fork into daemon process. Exiting.");
         exit(EXIT_FAILURE);
     }
@@ -59,14 +62,15 @@ void daemonize() {
 
     pid_t new_pid = getpid();
 
-    LOG.write(LogLevel::Always, "TwitchAutoArchive daemon started with PID " +
-                                    std::to_string(new_pid));
+    LOG.write(LogLevel::Always,
+              "TwitchAutoArchive daemon started with PID " + std::to_string(new_pid));
 
     /* Don't block context switch */
     sleep(1);
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
     parseArgs(argc, argv, gArgs);
 
     Config cfg = parseConfig(gArgs.configPath);
@@ -74,12 +78,12 @@ int main(int argc, char** argv) {
     LOG.init(gArgs.logPath, gArgs.debug);
     LOG.write(LogLevel::Always, "Log initalized!");
 
-    if (gArgs.daemon) {
+    if (gArgs.daemon)
+    {
         daemonize();
     }
 
-    auto archiver =
-        Archiver(std::move(cfg.auth), std::move(cfg.streamers), gArgs.rate);
+    auto archiver = Archiver(std::move(cfg.auth), std::move(cfg.streamers), gArgs.rate);
 
     archiver.run();
 }

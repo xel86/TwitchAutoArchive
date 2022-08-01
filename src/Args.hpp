@@ -2,10 +2,11 @@
 
 #include <filesystem>
 
-struct Args {
-    bool debug;  /* Flag to enable debug mode */
-    bool daemon; /* Flag to determine whether to daemonize process */
-    int rate;    /* Rate at which to check for live status (seconds) */
+struct Args
+{
+    bool debug;                       /* Flag to enable debug mode */
+    bool daemon;                      /* Flag to determine whether to daemonize process */
+    int rate;                         /* Rate at which to check for live status (seconds) */
     std::filesystem::path configPath; /* Config file path */
     std::filesystem::path logPath;    /* File path for log */
 };

@@ -6,7 +6,8 @@
 #include <unordered_map>
 #include <vector>
 
-struct Config {
+struct Config
+{
     TwitchAuth auth;
     std::unordered_map<std::string, Streamer> streamers;
 };

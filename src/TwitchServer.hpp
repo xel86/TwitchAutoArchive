@@ -9,20 +9,23 @@
 
 const std::string helixStreamsUrl = "https://api.twitch.tv/helix/streams";
 
-struct TwitchAuth {
+struct TwitchAuth
+{
     std::string clientID;
     std::string clientSecret;
     std::string accessToken;
 };
 
-struct Streamer {
+struct Streamer
+{
     std::string user_id;       /* User id of streamer */
     std::string user_login;    /* User login of streamer */
     std::filesystem::path dir; /* Directory to download streams too */
     bool live{false};
 };
 
-class TwitchServer {
+class TwitchServer
+{
   public:
     TwitchServer(TwitchAuth&& auth);
 
@@ -30,17 +33,15 @@ class TwitchServer {
      * struct to true or false accordingly. Returns a vector of pointers to the
      * Streamer elements in the map passed in that have changed live status.
      * Either from live to offline or offline to live. */
-    std::vector<Streamer*>
-    setLiveStatus(std::unordered_map<std::string, Streamer>& streamers,
-                  bool streamersAdded);
+    std::vector<Streamer*> setLiveStatus(std::unordered_map<std::string, Streamer>& streamers,
+                                         bool streamersAdded);
 
   private:
-    std::string appendUserIdsToUrl(
-        std::string url,
-        const std::unordered_map<std::string, Streamer>& streamers);
+    std::string appendUserIdsToUrl(std::string url,
+                                   const std::unordered_map<std::string, Streamer>& streamers);
 
-    static size_t curlWriteDataCallback(const char* contents, size_t size,
-                                        size_t nmemb, void* userp);
-    TwitchAuth m_auth;
-    CURL* m_curl;
+    static size_t curlWriteDataCallback(const char* contents, size_t size, size_t nmemb,
+                                        void* userp);
+    TwitchAuth mAuth;
+    CURL* mCurl;
 };

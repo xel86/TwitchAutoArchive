@@ -8,51 +8,74 @@
 #include <thread>
 #include <unistd.h>
 
-void Archiver::refreshStreamersFromConfig() {
+void Archiver::syncStreamersListFromConfig()
+{
+    auto lastWriteTime = std::filesystem::last_write_time(gArgs.configPath);
+    /* If config hasn't been changed, don't waste time reparsing */
+    if (lastWriteTime == mLastConfigWriteTime)
+    {
+        LOG.write(LogLevel::Always, "Didn't change");
+        return;
+    }
+
+    LOG.write(LogLevel::Always, "changed");
+    mLastConfigWriteTime = lastWriteTime;
+
     Config cfg = parseConfig(gArgs.configPath);
 
     /* Add any added streamers from the new config */
-    for (const auto& [user_id, streamer] : cfg.streamers) {
-        if (!m_streamers.count(user_id)) {
-            m_streamers.emplace(user_id, streamer);
-            LOG.write(LogLevel::Always, "Added new streamer (" + user_id +
-                                            ") to streamers target list");
+    for (const auto& [user_id, streamer] : cfg.streamers)
+    {
+        if (!mStreamers.count(user_id))
+        {
+            mStreamers.emplace(user_id, streamer);
+            LOG.write(LogLevel::Always,
+                      "Added new streamer (" + user_id + ") to streamers target list");
         }
     }
 
     /* Remove any streamers deleted from the previous config */
-    for (auto it = m_streamers.cbegin(); it != m_streamers.cend();) {
+    for (auto it = mStreamers.cbegin(); it != mStreamers.cend();)
+    {
         const std::string& user_id = it->first;
         const std::string& user_login = it->second.user_login;
-        if (!cfg.streamers.count(user_id)) {
-            LOG.write(LogLevel::Always, "Removed streamer " + user_login +
-                                            " (" + user_id + ") " +
+        if (!cfg.streamers.count(user_id))
+        {
+            LOG.write(LogLevel::Always, "Removed streamer " + user_login + " (" + user_id + ") " +
                                             "from streamers target list");
-            it = m_streamers.erase(it);
-        } else {
+            it = mStreamers.erase(it);
+        }
+        else
+        {
             ++it;
         }
     }
 }
 
-void Archiver::run() {
-    while (!m_shutdown) {
+void Archiver::run()
+{
+    mLastConfigWriteTime = std::filesystem::last_write_time(gArgs.configPath);
+
+    while (!mShutdown)
+    {
         LOG.write(LogLevel::Verbose, "Checking live status for all streams");
 
-        refreshStreamersFromConfig();
+        syncStreamersListFromConfig();
 
-        auto changedStatus = m_twitch.setLiveStatus(m_streamers, false);
-        if (!changedStatus.empty()) {
-            for (Streamer* s : changedStatus) {
+        auto changedStatus = mTwitchServer.setLiveStatus(mStreamers, false);
+        if (!changedStatus.empty())
+        {
+            for (Streamer* s : changedStatus)
+            {
                 /* Streamer went online */
-                if (s->live) {
-                    auto t = std::thread(streamlinkDownloadFunc, s->user_login,
-                                         s->dir);
+                if (s->live)
+                {
+                    auto t = std::thread(streamlinkDownloadFunc, s->user_login, s->dir);
                     t.detach();
                 }
             }
         }
 
-        sleep(m_rate);
+        sleep(mRate);
     }
 }

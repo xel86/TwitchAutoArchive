@@ -7,22 +7,22 @@
 #include <unordered_map>
 #include <vector>
 
-class Archiver {
+class Archiver
+{
   public:
     using user_id = std::string;
 
-    Archiver(TwitchAuth&& auth,
-             std::unordered_map<user_id, Streamer>&& streamers, int rate)
-        : m_twitch(std::move(auth)), m_streamers(std::move(streamers)),
-          m_rate(rate){};
+    Archiver(TwitchAuth&& auth, std::unordered_map<user_id, Streamer>&& streamers, int rate) :
+        mTwitchServer(std::move(auth)), mStreamers(std::move(streamers)), mRate(rate){};
 
     void run();
 
-    void refreshStreamersFromConfig();
+    void syncStreamersListFromConfig();
 
   private:
-    TwitchServer m_twitch;
-    std::unordered_map<user_id, Streamer> m_streamers;
-    int m_rate;
-    bool m_shutdown{false};
+    TwitchServer mTwitchServer;
+    std::unordered_map<user_id, Streamer> mStreamers;
+    std::filesystem::file_time_type mLastConfigWriteTime;
+    int mRate;
+    bool mShutdown{false};
 };
