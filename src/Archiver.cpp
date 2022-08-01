@@ -13,12 +13,8 @@ void Archiver::syncStreamersListFromConfig()
     auto lastWriteTime = std::filesystem::last_write_time(gArgs.configPath);
     /* If config hasn't been changed, don't waste time reparsing */
     if (lastWriteTime == mLastConfigWriteTime)
-    {
-        LOG.write(LogLevel::Always, "Didn't change");
         return;
-    }
 
-    LOG.write(LogLevel::Always, "changed");
     mLastConfigWriteTime = lastWriteTime;
 
     Config cfg = parseConfig(gArgs.configPath);
