@@ -64,9 +64,8 @@ TwitchServer::appendUserIdsToUrl(std::string url,
     return url;
 }
 
-std::vector<Streamer*>
-TwitchServer::setLiveStatus(std::unordered_map<std::string, Streamer>& streamers,
-                            bool streamersAdded)
+bool
+TwitchServer::setLiveStatus(std::unordered_map<std::string, Streamer>& streamers)
 {
     std::string url = appendUserIdsToUrl(helixStreamsUrl, streamers);
     curl_easy_setopt(mCurl, CURLOPT_URL, url.c_str());
@@ -90,7 +89,7 @@ TwitchServer::setLiveStatus(std::unordered_map<std::string, Streamer>& streamers
     {
         LOG.write(LogLevel::Error,
                   "Twitch GetStreams api call failed with error code: " + std::to_string(code));
-        return {};
+        return false;
     }
 
     std::vector<Streamer*> changedStatus;
@@ -119,22 +118,12 @@ TwitchServer::setLiveStatus(std::unordered_map<std::string, Streamer>& streamers
 
             if (it != liveIds.end())
             {
-                /* Streamer went online */
-                if (streamer.live == false)
-                {
-                    streamer.live = true;
-                    streamer.user_login = (*it)["user_login"];
-                    changedStatus.push_back(&streamer);
-                }
+                streamer.live = true;
+                streamer.user_login = (*it)["user_login"];
             }
             else
             {
-                /* Streamer went offline */
-                if (streamer.live == true)
-                {
-                    streamer.live = false;
-                    changedStatus.push_back(&streamer);
-                }
+                streamer.live = false;
             }
         }
     }
@@ -143,10 +132,10 @@ TwitchServer::setLiveStatus(std::unordered_map<std::string, Streamer>& streamers
         LOG.write(LogLevel::Error,
                   "Failed to parse twitch api GetStreams json response with error: " +
                       std::string(e.what()));
-        return {};
+        return false;
     }
 
-    return changedStatus;
+    return true;
 }
 
 size_t TwitchServer::curlWriteDataCallback(const char* contents, size_t size, size_t nmemb,

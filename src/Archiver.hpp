@@ -5,7 +5,9 @@
 #include <filesystem>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
+#include <mutex>
 
 class Archiver
 {
@@ -22,6 +24,8 @@ class Archiver
   private:
     TwitchServer mTwitchServer;
     std::unordered_map<user_id, Streamer> mStreamers;
+    std::unordered_set<user_id> mDownloading;
+    std::mutex mDownloadingMutex;
     std::filesystem::file_time_type mLastConfigWriteTime;
     int mRate;
     bool mShutdown{false};

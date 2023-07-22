@@ -14,6 +14,7 @@ struct TwitchAuth
     std::string clientID;
     std::string clientSecret;
     std::string accessToken;
+    std::string personalOAuth;
 };
 
 struct Streamer
@@ -33,8 +34,7 @@ class TwitchServer
      * struct to true or false accordingly. Returns a vector of pointers to the
      * Streamer elements in the map passed in that have changed live status.
      * Either from live to offline or offline to live. */
-    std::vector<Streamer*> setLiveStatus(std::unordered_map<std::string, Streamer>& streamers,
-                                         bool streamersAdded);
+    bool setLiveStatus(std::unordered_map<std::string, Streamer>& streamers);
 
   private:
     std::string appendUserIdsToUrl(std::string url,

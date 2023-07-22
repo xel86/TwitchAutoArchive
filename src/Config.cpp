@@ -8,7 +8,12 @@ void generateSampleConfig(std::filesystem::path path)
 {
     std::ofstream sampleConfig(path);
     const char* sample =
-        R"(# You must provide either a client_id and secret, or an access_token.
+R"(# You must provide either a client_id and secret, or an access_token.
+# Twitch now embeds ads directly into the hls stream, potentially interupting archiving.
+# If you have twitch turbo, you can avoid ads while archiving streams by using a personal twitch oauth token
+# This is different from any normal 3rd party access tokens, and must be taken manually from a logged in browser.
+# Config this in your streamlink config
+# More information: https://streamlink.github.io/cli/plugins/twitch.html#authentication
 [TwitchAuth]
 client_id =
 client_secret =

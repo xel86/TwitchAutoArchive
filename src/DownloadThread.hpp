@@ -3,5 +3,9 @@
 #include "TwitchServer.hpp"
 
 #include <filesystem>
+#include <mutex>
+#include <unordered_set>
 
-void streamlinkDownloadFunc(std::string user_login, std::filesystem::path dir);
+using user_id = std::string;
+
+void streamlinkDownloadFunc(Streamer& streamer, std::unordered_set<user_id>& downloading, std::mutex& downloadingMutex);

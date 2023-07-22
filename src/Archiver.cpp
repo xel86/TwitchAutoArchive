@@ -57,20 +57,25 @@ void Archiver::run()
         LOG.write(LogLevel::Verbose, "Checking live status for all streams");
 
         syncStreamersListFromConfig();
+        mTwitchServer.setLiveStatus(mStreamers);
 
-        auto changedStatus = mTwitchServer.setLiveStatus(mStreamers, false);
-        if (!changedStatus.empty())
+        std::unique_lock<std::mutex> lock(mDownloadingMutex);
+
+        for (auto& [user_id, streamer] : mStreamers)
         {
-            for (Streamer* s : changedStatus)
+            /* 
+             * Check if streamer is live and if we are currently downloading the stream
+             * If the streamer is live and we aren't currently downloading, spawn a download thread
+             */
+            if (streamer.live && (mDownloading.count(user_id) == 0))
             {
-                /* Streamer went online */
-                if (s->live)
-                {
-                    auto t = std::thread(streamlinkDownloadFunc, s->user_login, s->dir);
-                    t.detach();
-                }
+                mDownloading.insert(user_id);
+                auto t = std::thread(streamlinkDownloadFunc, std::ref(streamer), std::ref(mDownloading), std::ref(mDownloadingMutex));
+                t.detach();
             }
         }
+
+        lock.unlock();
 
         sleep(mRate);
     }

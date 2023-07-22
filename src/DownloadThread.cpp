@@ -3,16 +3,21 @@
 
 #include <thread>
 
-void streamlinkDownloadFunc(std::string user_login, std::filesystem::path dir)
+void streamlinkDownloadFunc(Streamer& streamer, std::unordered_set<user_id>& downloading, std::mutex& downloadingMutex)
 {
-    std::string url = "https://twitch.tv/" + user_login;
+    LOG.write(LogLevel::Always, "Opening stream " + streamer.user_login + " to download.");
+
+    /* Construct streamlink download command */
+    std::string url = "https://twitch.tv/" + streamer.user_login;
     std::time_t result = std::time(nullptr);
-    dir /= (user_login + "-" + std::to_string(result) + ".mkv");
-
-    LOG.write(LogLevel::Always, "Opening stream " + url + " to download.");
-
+    std::filesystem::path dir = streamer.dir / (streamer.user_login + "-" + std::to_string(result) + ".mkv");
     std::string cmd = "streamlink " + url + " best -o " + dir.string();
+
     std::system(cmd.c_str());
 
-    LOG.write(LogLevel::Always, "Closed stream " + url + ", finished downloading.");
+    /* Once streamlink closes, remove streamer user_id from the downloading set */
+    std::unique_lock<std::mutex> lock(downloadingMutex);
+    downloading.erase(streamer.user_id);
+
+    LOG.write(LogLevel::Always, "Closed stream " + streamer.user_login + ", finished downloading.");
 }
