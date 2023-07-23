@@ -70,7 +70,10 @@ void Archiver::run()
             if (streamer.live && (mDownloading.count(user_id) == 0))
             {
                 mDownloading.insert(user_id);
-                auto t = std::thread(streamlinkDownloadFunc, std::ref(streamer), std::ref(mDownloading), std::ref(mDownloadingMutex));
+                auto t = std::thread(streamlinkDownloadFunc,
+                                     streamer,
+                                     std::ref(mDownloading),
+                                     std::ref(mDownloadingMutex));
                 t.detach();
             }
         }

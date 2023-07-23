@@ -8,4 +8,6 @@
 
 using user_id = std::string;
 
-void streamlinkDownloadFunc(Streamer& streamer, std::unordered_set<user_id>& downloading, std::mutex& downloadingMutex);
+void streamlinkDownloadFunc(Streamer streamer,
+                            std::unordered_set<user_id>& downloading,
+                            std::mutex& downloadingMutex);
